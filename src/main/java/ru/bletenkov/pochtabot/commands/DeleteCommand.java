@@ -14,15 +14,13 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.bletenkov.pochtabot.enums.CommandsEnum;
 import ru.bletenkov.pochtabot.services.PackageService;
 
-import javax.script.ScriptEngine;
-
 public class DeleteCommand implements IBotCommand {
 
     private static final String logTAG = CommandsEnum.DELETE.toString();
-    private String commandName = "delete";
-    private String description = "Delete parcel from tracking";
+    private final String commandName = "delete";
+    private final String description = "Delete parcel from tracking";
 
-    private PackageService packageService;
+    private final PackageService packageService;
 
     public DeleteCommand(PackageService packageService) {
         this.packageService = packageService;
@@ -44,7 +42,7 @@ public class DeleteCommand implements IBotCommand {
         String messageString = "Delete parcel tracking number from database \n /delete [Number1] [Number2] ...";
         if(strings.length != 0){
             for(String code : strings) {
-                packageService.deleteByCode(code);
+                packageService.deleteByCode(code, message.getChatId());
             }
             messageString = "Tracking numbers has been deleted";
         }

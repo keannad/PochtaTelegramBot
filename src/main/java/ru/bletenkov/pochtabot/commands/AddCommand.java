@@ -14,15 +14,14 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.bletenkov.pochtabot.enums.CommandsEnum;
 import ru.bletenkov.pochtabot.models.PackageModel;
 import ru.bletenkov.pochtabot.services.PackageService;
-import ru.bletenkov.pochtabot.services.UserService;
 
 public class AddCommand implements IBotCommand {
 
     public static final String logTAG = CommandsEnum.ADD.toString();
-    private String commandName = "add";
-    private String description = "Add parcel to tracking";
+    private final String commandName = "add";
+    private final String description = "Add parcel to tracking";
 
-    private PackageService packageService;
+    private final PackageService packageService;
 
     public AddCommand(PackageService packageService) {
         this.packageService = packageService;
@@ -46,7 +45,7 @@ public class AddCommand implements IBotCommand {
             int counter = 0;
 
             for(String code: strings){
-                PackageModel pack = packageService.getByCode(code);
+                PackageModel pack = packageService.getByCodeAndUserId(code, message.getChatId());
 
                 if (pack == null) {
                     pack = new PackageModel();

@@ -10,8 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import ru.bletenkov.pochtabot.models.PackageModel;
 import ru.bletenkov.pochtabot.repos.PackageRepository;
 
-import java.util.Arrays;
-
 public class PackageService {
 
     private PackageRepository packageRepository;
@@ -21,16 +19,15 @@ public class PackageService {
         this.packageRepository = packageRepository;
     }
 
-    public boolean savePackage(PackageModel pack){
+    public void savePackage(PackageModel pack){
         packageRepository.save(pack);
-        return true;
     }
 
-    public PackageModel getByCode(String code){
-        return packageRepository.getByCode(code);
+    public PackageModel getByCodeAndUserId(String code, Long userId){
+        return packageRepository.getByCodeAndUserId(code, userId);
     }
 
-    public void deleteByCode(String code){
-        packageRepository.delete(packageRepository.getByCode(code));
+    public void deleteByCode(String code, Long userId){
+        packageRepository.delete(packageRepository.getByCodeAndUserId(code, userId));
     }
 }

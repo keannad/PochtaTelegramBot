@@ -7,12 +7,10 @@ package ru.bletenkov.pochtabot.config;
 */
 
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
-import ru.bletenkov.pochtabot.repos.PackageRepository;
 import ru.bletenkov.pochtabot.services.PackageService;
 import ru.bletenkov.pochtabot.services.UserService;
 

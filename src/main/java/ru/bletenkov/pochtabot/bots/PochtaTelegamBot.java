@@ -6,22 +6,20 @@ package ru.bletenkov.pochtabot.bots;
     @project:    PochtaTelegramBot
 */
 
-import com.jayway.jsonpath.internal.function.json.Append;
-import org.springframework.context.ApplicationContext;
 import org.telegram.telegrambots.extensions.bots.commandbot.TelegramLongPollingCommandBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.bletenkov.pochtabot.commands.*;
-import ru.bletenkov.pochtabot.repos.UserRepository;
 import ru.bletenkov.pochtabot.services.PackageService;
 import ru.bletenkov.pochtabot.services.PostSOAPSingleService;
 import ru.bletenkov.pochtabot.services.UserService;
 
 import java.util.List;
+import java.util.Properties;
 
 public class PochtaTelegamBot extends TelegramLongPollingCommandBot {
 
-    private final String bot_name = "RussianPostTelegramBot";
-    private final String bot_token = "1927863991:AAFEFgSDNBNP7gmAN2SJ1LRoozRtlkDqHeM";
+    private String bot_name;
+    private String bot_token;
 
     private final UserService userService;
     private final PackageService packageService;
@@ -29,6 +27,21 @@ public class PochtaTelegamBot extends TelegramLongPollingCommandBot {
     public PochtaTelegamBot(UserService userService,
                             PackageService packageService) {
         super();
+
+        try {
+
+            ClassLoader loader = Thread.currentThread().getContextClassLoader();
+
+            Properties appProps = new Properties();
+            appProps.load(loader.getResourceAsStream("bot.properties"));
+            this.bot_name = appProps.getProperty("botname");
+            this.bot_token = appProps.getProperty("bottoken");
+
+        }catch (Exception ex){
+
+            ex.printStackTrace();
+
+        }
 
         this.userService = userService;
         this.packageService = packageService;
@@ -38,7 +51,7 @@ public class PochtaTelegamBot extends TelegramLongPollingCommandBot {
         register(new DeleteCommand(packageService));
         register(new LastCommand(packageService));
         register(new RegisterCommand(userService));
-        register(new TrackCommand(new PostSOAPSingleService()));
+        register(new TrackCommand(new PostSOAPSingleService(), userService, packageService));
     }
 
     @Override

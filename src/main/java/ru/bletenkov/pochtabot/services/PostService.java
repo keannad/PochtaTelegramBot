@@ -6,8 +6,12 @@ package ru.bletenkov.pochtabot.services;
     @project:    PochtaTelegramBot
 */
 
+import ru.bletenkov.pochtabot.models.HistoryRecord;
+
+import java.util.ArrayList;
+
 public interface PostService {
 
-    String getOperationHistory(String string);
+    ArrayList<HistoryRecord> getOperationHistory(String string);
 
 }

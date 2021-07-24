@@ -15,5 +15,5 @@ import java.util.List;
 @Repository
 public interface PackageRepository extends CrudRepository<PackageModel, Long> {
     List<PackageModel> getByUserId(Long userId);
-    PackageModel getByCode(String code);
+    PackageModel getByCodeAndUserId(String code, Long userId);
 }

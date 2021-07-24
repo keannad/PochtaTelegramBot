@@ -16,8 +16,8 @@ import ru.bletenkov.pochtabot.enums.CommandsEnum;
 public class StartCommand implements IBotCommand {
 
     private static final String logTAG = CommandsEnum.START.toString();
-    private String commandName = "start";
-    private String description = "Bot start command";
+    private final String commandName = "start";
+    private final String description = "Bot start command";
 
     @Override
     public String getCommandIdentifier() {

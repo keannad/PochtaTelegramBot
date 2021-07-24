@@ -29,6 +29,7 @@ public class PackageModel {
         return id;
     }
 
+    //User ID
     public Long getUserId() {
         return userId;
     }
@@ -37,6 +38,7 @@ public class PackageModel {
         this.userId = userId;
     }
 
+    //Code
     public String getCode() {
         return code;
     }
@@ -45,6 +47,7 @@ public class PackageModel {
         this.code = code;
     }
 
+    //Last state
     public String getLastStateString() {
         return lastStateString;
     }
@@ -53,6 +56,7 @@ public class PackageModel {
         this.lastStateString = lastStateString;
     }
 
+    //Last state date
     public String getLastStateDate() {
         return lastStateDate;
     }
@@ -61,6 +65,7 @@ public class PackageModel {
         this.lastStateDate = lastStateDate;
     }
 
+    //Is dead code
     public boolean isIsDead() {
         return isDead;
     }

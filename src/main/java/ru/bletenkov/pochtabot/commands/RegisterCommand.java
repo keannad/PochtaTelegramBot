@@ -6,26 +6,22 @@ package ru.bletenkov.pochtabot.commands;
     @project:    PochtaTelegramBot
 */
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.telegram.telegrambots.extensions.bots.commandbot.commands.IBotCommand;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
-import org.telegram.telegrambots.meta.api.objects.User;
-import org.telegram.telegrambots.meta.api.objects.commands.BotCommand;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.bletenkov.pochtabot.enums.CommandsEnum;
 import ru.bletenkov.pochtabot.models.UserModel;
-import ru.bletenkov.pochtabot.repos.UserRepository;
 import ru.bletenkov.pochtabot.services.UserService;
 
 public class RegisterCommand implements IBotCommand {
 
     private static final String logTAG = CommandsEnum.REGISTER.toString();
-    private String commandName = "register";
-    private String description = "Register user to get auto updates";
+    private final String commandName = "register";
+    private final String description = "Register user to get auto updates";
 
-    private UserService userService;
+    private final UserService userService;
 
     public RegisterCommand(UserService userService) {
         this.userService = userService;

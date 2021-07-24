@@ -8,29 +8,48 @@ package ru.bletenkov.pochtabot.services;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import ru.bletenkov.pochtabot.models.HistoryRecord;
 
 import javax.xml.soap.*;
-import javax.xml.xpath.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.stream.IntStream;
 
 public class PostSOAPSingleService implements PostService{
 
-    private final String login = "";
-    private final String password = "";
+    private String login;
+    private String password;
 
-    private String soapUrl = "https://tracking.russianpost.ru/rtm34";
+    private String soapUrl;
+
+    public PostSOAPSingleService() {
+
+        try {
+
+            ClassLoader loader = Thread.currentThread().getContextClassLoader();
+
+            Properties appProps = new Properties();
+            appProps.load(loader.getResourceAsStream("pochta.properties"));
+            login = appProps.getProperty("login");
+            password = appProps.getProperty("password");
+            soapUrl = appProps.getProperty("url");
+
+        }catch (Exception ex){
+
+            ex.printStackTrace();
+
+        }
+    }
 
     @Override
-    public String getOperationHistory(String barcode){
+    public ArrayList<HistoryRecord> getOperationHistory(String barcode){
 
-        StringBuilder statusString = new StringBuilder();
+        ArrayList<HistoryRecord> historyRecords = null;
 
         try {
             SOAPConnectionFactory soapConnFactory = SOAPConnectionFactory.newInstance();
@@ -56,16 +75,7 @@ public class PostSOAPSingleService implements PostService{
             Document document = soapResponse.getSOAPBody().extractContentAsDocument();
 
             SoapResponseParser parser = new SoapResponseParser(document);
-            ArrayList<HistoryRecord> list = (ArrayList<HistoryRecord>) parser.parse();
-            int counter = 1;
-            for(HistoryRecord record : list){
-                String singleString = String.format("%3d %32s %32s %s",
-                        counter++,
-                        record.getOperTypeName(),
-                        record.getOperAttrName(),
-                        record.getOperDate());
-                statusString.append(singleString).append("\n");
-            }
+            historyRecords = (ArrayList<HistoryRecord>) parser.parse();
 
             //Закрываем соединение
             connection.close();
@@ -74,7 +84,7 @@ public class PostSOAPSingleService implements PostService{
             e.printStackTrace();
         }
 
-        return statusString.toString();
+        return historyRecords;
     }
 
     private void setSoapEnvelop(SOAPEnvelope soapEnvelope) throws SOAPException {
@@ -119,9 +129,9 @@ public class PostSOAPSingleService implements PostService{
         }
     }
 
-    private class SoapResponseParser{
+    private static class SoapResponseParser{
 
-        private Document document;
+        private final Document document;
 
         public SoapResponseParser(Document document){
             document.getDocumentElement().normalize();
@@ -169,6 +179,20 @@ public class PostSOAPSingleService implements PostService{
                             tempRecord.setOperDate(formatter.parse(operDate.substring(0, operDate.length() - 5)));
                         } catch (ParseException e) {
                             e.printStackTrace();
+                        }
+
+                        switch (tempRecord.getOperTypeId()){
+                            case 2:
+                            case 15:
+                            case 16:
+                            case 17:
+                            case 18:
+                                tempRecord.setLast(true);
+                                break;
+                            case 5:
+                                if(tempRecord.getOperAttrId() == 1 || tempRecord.getOperAttrId() == 2)
+                                    tempRecord.setLast(true);
+                                break;
                         }
                     }
                 }

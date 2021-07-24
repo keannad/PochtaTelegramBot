@@ -7,7 +7,6 @@ package ru.bletenkov.pochtabot.services;
 */
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import ru.bletenkov.pochtabot.models.PackageModel;
 import ru.bletenkov.pochtabot.models.UserModel;
 import ru.bletenkov.pochtabot.repos.PackageRepository;
@@ -35,9 +34,13 @@ public class UserService {
         return userRepository.getByChatId(chatId);
     }
 
-    public boolean saveUserModel(UserModel user){
+    public boolean isRegistered(Long chatId){
+        UserModel model = userRepository.getByChatId(chatId);
+        return model != null;
+    }
+
+    public void saveUserModel(UserModel user){
         userRepository.save(user);
-        return true;
     }
 
     public boolean deleteUserModel(Long chatId){

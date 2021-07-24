@@ -18,10 +18,10 @@ import ru.bletenkov.pochtabot.services.PackageService;
 public class LastCommand implements IBotCommand {
 
     private static final String logTAG = CommandsEnum.LAST.toString();
-    private String commandName = "last";
-    private String description = "Show last states of tracking parcels";
+    private final String commandName = "last";
+    private final String description = "Show last states of tracking parcels";
 
-    private PackageService packageService;
+    private final PackageService packageService;
 
     public LastCommand(PackageService packageService) {
         this.packageService = packageService;

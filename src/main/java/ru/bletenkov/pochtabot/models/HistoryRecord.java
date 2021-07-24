@@ -18,6 +18,9 @@ public class HistoryRecord {
     private int operAttrId;
     private String operAttrName;
 
+    private boolean isLast;
+
+    //Oper type ID
     public int getOperTypeId() {
         return operTypeId;
     }
@@ -26,6 +29,7 @@ public class HistoryRecord {
         this.operTypeId = operTypeId;
     }
 
+    //Oper type name
     public String getOperTypeName() {
         return operTypeName;
     }
@@ -34,8 +38,14 @@ public class HistoryRecord {
         this.operTypeName = operTypeName;
     }
 
-    public String getOperDate() {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+    //Oper date
+    public String getOperDateISOString(){
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+        return formatter.format(operDate);
+    }
+
+    public String getOperDateString() {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm");
         return simpleDateFormat.format(operDate);
     }
 
@@ -43,6 +53,7 @@ public class HistoryRecord {
         this.operDate = operDate;
     }
 
+    //Oper Attr ID
     public int getOperAttrId() {
         return operAttrId;
     }
@@ -51,11 +62,21 @@ public class HistoryRecord {
         this.operAttrId = operAttrId;
     }
 
+    //Oper Attr Name
     public String getOperAttrName() {
         return operAttrName != null ? operAttrName : "";
     }
 
     public void setOperAttrName(String operAttrName) {
         this.operAttrName = operAttrName;
+    }
+
+    //Is last
+    public boolean isLast() {
+        return isLast;
+    }
+
+    public void setLast(boolean last) {
+        isLast = last;
     }
 }
