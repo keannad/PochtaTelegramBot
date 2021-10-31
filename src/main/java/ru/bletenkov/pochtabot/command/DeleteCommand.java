@@ -1,30 +1,22 @@
-package ru.bletenkov.pochtabot.commands;
-/*
-    Created by IntelliJ IDEA
-    @author:     Bletenkov Kirill aka Keannad
-    @date:       19.07.2021
-    @project:    PochtaTelegramBot
-*/
+package ru.bletenkov.pochtabot.command;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.extensions.bots.commandbot.commands.IBotCommand;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import ru.bletenkov.pochtabot.enums.CommandsEnum;
-import ru.bletenkov.pochtabot.services.PackageService;
+import ru.bletenkov.pochtabot.service.impl.PackageServiceImpl;
 
+@RequiredArgsConstructor
+@Slf4j
 public class DeleteCommand implements IBotCommand {
 
-    private static final String logTAG = CommandsEnum.DELETE.toString();
     private final String commandName = "delete";
     private final String description = "Delete parcel from tracking";
 
-    private final PackageService packageService;
-
-    public DeleteCommand(PackageService packageService) {
-        this.packageService = packageService;
-    }
+    private final PackageServiceImpl packageServiceImpl;
 
     @Override
     public String getCommandIdentifier() {
@@ -42,7 +34,7 @@ public class DeleteCommand implements IBotCommand {
         String messageString = "Delete parcel tracking number from database \n /delete [Number1] [Number2] ...";
         if(strings.length != 0){
             for(String code : strings) {
-                packageService.deleteByCode(code, message.getChatId());
+                packageServiceImpl.deleteByUserIdAndCode(message.getChatId(), code);
             }
             messageString = "Tracking numbers has been deleted";
         }

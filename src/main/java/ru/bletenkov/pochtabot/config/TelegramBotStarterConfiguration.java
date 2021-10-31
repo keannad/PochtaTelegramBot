@@ -1,18 +1,16 @@
 package ru.bletenkov.pochtabot.config;
-/*
-    Created by IntelliJ IDEA
-    @author:     Bletenkov Kirill aka Keannad
-    @date:       19.07.2021
-    @project:    PochtaTelegramBot
-*/
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
-import ru.bletenkov.pochtabot.services.PackageService;
-import ru.bletenkov.pochtabot.services.UserService;
+import ru.bletenkov.pochtabot.repository.PackageRepository;
+import ru.bletenkov.pochtabot.repository.UserRepository;
+import ru.bletenkov.pochtabot.service.PackageService;
+import ru.bletenkov.pochtabot.service.UserService;
+import ru.bletenkov.pochtabot.service.impl.PackageServiceImpl;
+import ru.bletenkov.pochtabot.service.impl.UserServiceImpl;
 
 @Configuration
 public class TelegramBotStarterConfiguration {
@@ -23,19 +21,19 @@ public class TelegramBotStarterConfiguration {
     }
 
     @Bean
-    public UserService userService(){
-        return new UserService();
+    public UserService userService(UserRepository userRepository, PackageService packageService){
+        return new UserServiceImpl(userRepository, packageService);
     }
 
     @Bean
-    public PackageService packageService(){
-        return new PackageService();
+    public PackageService packageService(PackageRepository packageRepository){
+        return new PackageServiceImpl(packageRepository);
     }
 
     @Bean
     public TelegramBotInitializer telegramBotInitializer(TelegramBotsApi telegramBotsApi,
-                                                         UserService userService,
-                                                         PackageService packageService) throws TelegramApiException {
-        return new TelegramBotInitializer(telegramBotsApi(), userService(), packageService());
+                                                         UserServiceImpl userService,
+                                                         PackageServiceImpl packageServiceImpl) throws TelegramApiException {
+        return new TelegramBotInitializer(telegramBotsApi, userService, packageServiceImpl);
     }
 }

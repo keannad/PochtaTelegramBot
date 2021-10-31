@@ -1,31 +1,23 @@
-package ru.bletenkov.pochtabot.commands;
-/*
-    Created by IntelliJ IDEA
-    @author:     Bletenkov Kirill aka Keannad
-    @date:       19.07.2021
-    @project:    PochtaTelegramBot
-*/
+package ru.bletenkov.pochtabot.command;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.extensions.bots.commandbot.commands.IBotCommand;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import ru.bletenkov.pochtabot.enums.CommandsEnum;
-import ru.bletenkov.pochtabot.models.PackageModel;
-import ru.bletenkov.pochtabot.services.PackageService;
+import ru.bletenkov.pochtabot.model.MailPackage;
+import ru.bletenkov.pochtabot.service.PackageService;
 
+@RequiredArgsConstructor
+@Slf4j
 public class AddCommand implements IBotCommand {
 
-    public static final String logTAG = CommandsEnum.ADD.toString();
     private final String commandName = "add";
     private final String description = "Add parcel to tracking";
 
     private final PackageService packageService;
-
-    public AddCommand(PackageService packageService) {
-        this.packageService = packageService;
-    }
 
     @Override
     public String getCommandIdentifier() {
@@ -45,13 +37,13 @@ public class AddCommand implements IBotCommand {
             int counter = 0;
 
             for(String code: strings){
-                PackageModel pack = packageService.getByCodeAndUserId(code, message.getChatId());
+                MailPackage pack = packageService.getByCodeAndUserId(message.getChatId(), code);
 
                 if (pack == null) {
-                    pack = new PackageModel();
-                    pack.setUserId(message.getChatId());
+                    pack = new MailPackage();
+                    //pack.setUser(message.getChatId());
                     pack.setCode(code);
-                    packageService.savePackage(pack);
+                    packageService.save(pack);
                     messageString.append(code).append(", ");
                     counter++;
                 }

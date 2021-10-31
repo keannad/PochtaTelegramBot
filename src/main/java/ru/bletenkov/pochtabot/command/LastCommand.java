@@ -1,23 +1,22 @@
-package ru.bletenkov.pochtabot.commands;
-/*
-    Created by IntelliJ IDEA
-    @author:     Bletenkov Kirill aka Keannad
-    @date:       19.07.2021
-    @project:    PochtaTelegramBot
-*/
+package ru.bletenkov.pochtabot.command;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.extensions.bots.commandbot.commands.IBotCommand;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import ru.bletenkov.pochtabot.enums.CommandsEnum;
+import ru.bletenkov.pochtabot.service.impl.PackageServiceImpl;
 
-public class StartCommand implements IBotCommand {
+@RequiredArgsConstructor
+@Slf4j
+public class LastCommand implements IBotCommand {
 
-    private static final String logTAG = CommandsEnum.START.toString();
-    private final String commandName = "start";
-    private final String description = "Bot start command";
+    private final String commandName = "last";
+    private final String description = "Show last states of tracking parcels";
+
+    private final PackageServiceImpl packageServiceImpl;
 
     @Override
     public String getCommandIdentifier() {
@@ -34,7 +33,7 @@ public class StartCommand implements IBotCommand {
 
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(message.getChatId().toString());
-        sendMessage.setText("Russian Post Telegram Bot");
+        sendMessage.setText(description);
 
         try {
             absSender.execute(sendMessage);

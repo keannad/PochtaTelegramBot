@@ -1,42 +1,30 @@
-package ru.bletenkov.pochtabot.commands;
-/*
-    Created by IntelliJ IDEA
-    @author:     Bletenkov Kirill aka Keannad
-    @date:       19.07.2021
-    @project:    PochtaTelegramBot
-*/
+package ru.bletenkov.pochtabot.command;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.extensions.bots.commandbot.commands.IBotCommand;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import ru.bletenkov.pochtabot.enums.CommandsEnum;
-import ru.bletenkov.pochtabot.models.HistoryRecord;
-import ru.bletenkov.pochtabot.models.PackageModel;
-import ru.bletenkov.pochtabot.services.PackageService;
-import ru.bletenkov.pochtabot.services.PostService;
-import ru.bletenkov.pochtabot.services.UserService;
+import ru.bletenkov.pochtabot.model.HistoryRecord;
+import ru.bletenkov.pochtabot.model.MailPackage;
+import ru.bletenkov.pochtabot.service.impl.PackageServiceImpl;
+import ru.bletenkov.pochtabot.service.PostService;
+import ru.bletenkov.pochtabot.service.impl.UserServiceImpl;
 
 import java.util.ArrayList;
 
+@RequiredArgsConstructor
+@Slf4j
 public class TrackCommand implements IBotCommand {
 
-    private static final String logTAG = CommandsEnum.LAST.toString();
     private final String commandName = "track";
     private final String description = "Track one parcel";
 
     private final PostService service;
-    private final UserService userService;
-    private final PackageService packageService;
-
-    public TrackCommand(PostService service,
-                        UserService userService,
-                        PackageService packageService) {
-        this.service = service;
-        this.userService = userService;
-        this.packageService = packageService;
-    }
+    private final UserServiceImpl userService;
+    private final PackageServiceImpl packageServiceImpl;
 
     @Override
     public String getCommandIdentifier() {
@@ -65,19 +53,17 @@ public class TrackCommand implements IBotCommand {
             for (HistoryRecord record : historyRecords){
                 messageString.append(String.format("|%3d|%-32s|%16s|",
                         counter++,
-                        record.getOperAttrName().isEmpty() ? record.getOperTypeName() : record.getOperAttrName(),
+                        record.getRecordAttrName().isEmpty() ? record.getRecordTypeName() : record.getRecordAttrName(),
                         record.getOperDateString()));
                 messageString.append("\n");
             }
 
             if (userService.isRegistered(message.getChatId())){
                 HistoryRecord lastState = historyRecords.get(historyRecords.size() - 1);
-                PackageModel model = packageService.getByCodeAndUserId(packageCode, message.getChatId());
+                MailPackage model = packageServiceImpl.getByCodeAndUserId(message.getChatId(), packageCode);
                 if (model != null){
-                    model.setLastStateString(lastState.getOperAttrName());
-                    model.setLastStateDate(lastState.getOperDateISOString());
-                    model.setIsDead(lastState.isLast());
-                    packageService.savePackage(model);
+                    model.setDead(lastState.isLast());
+                    packageServiceImpl.save(model);
                 }
             }
         }

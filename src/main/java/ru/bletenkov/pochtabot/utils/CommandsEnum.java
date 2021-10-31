@@ -1,10 +1,4 @@
-package ru.bletenkov.pochtabot.enums;
-/*
-    Created by IntelliJ IDEA
-    @author:     Bletenkov Kirill aka Keannad
-    @date:       19.07.2021
-    @project:    PochtaTelegramBot
-*/
+package ru.bletenkov.pochtabot.utils;
 
 import java.util.Arrays;
 import java.util.List;

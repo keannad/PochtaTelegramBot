@@ -1,16 +1,13 @@
-package ru.bletenkov.pochtabot.services;
-/*
-    Created by IntelliJ IDEA
-    @author:     Bletenkov Kirill aka Keannad
-    @date:       20.07.2021
-    @project:    PochtaTelegramBot
-*/
+package ru.bletenkov.pochtabot.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
+import org.jvnet.hk2.annotations.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import ru.bletenkov.pochtabot.models.HistoryRecord;
+import ru.bletenkov.pochtabot.model.HistoryRecord;
+import ru.bletenkov.pochtabot.service.PostService;
 
 import javax.xml.soap.*;
 import java.text.ParseException;
@@ -20,7 +17,9 @@ import java.util.List;
 import java.util.Properties;
 import java.util.stream.IntStream;
 
-public class PostSOAPSingleService implements PostService{
+@Service
+@Slf4j
+public class PostSOAPSingleService implements PostService {
 
     private String login;
     private String password;
@@ -155,19 +154,19 @@ public class PostSOAPSingleService implements PostService{
                         Element operationParametersElement = (Element) operationParameters;
 
                         //OperType element
-                        Element operTypeElement = (Element) operationParametersElement.getElementsByTagName("ns3:OperType").item(0);
-                        int operTypeId = Integer.parseInt(operTypeElement.getElementsByTagName("ns3:Id").item(0).getTextContent());
-                        tempRecord.setOperTypeId(operTypeId);
-                        tempRecord.setOperTypeName(operTypeElement.getElementsByTagName("ns3:Name").item(0).getTextContent());
+                        Element typeElement = (Element) operationParametersElement.getElementsByTagName("ns3:OperType").item(0);
+                        int typeId = Integer.parseInt(typeElement.getElementsByTagName("ns3:Id").item(0).getTextContent());
+                        tempRecord.setRecordTypeId(typeId);
+                        tempRecord.setRecordTypeName(typeElement.getElementsByTagName("ns3:Name").item(0).getTextContent());
 
                         //OperAttr element
                         int[] withOutAttr = {9, 10, 11, 13, 15, 16, 17, 18, 19, 20, 23, 25, 27, 28, 29, 30, 32 ,34, 37, 43, 44, 45, 46 ,47 ,48, 52};
-                        if(IntStream.of(withOutAttr).noneMatch(x -> x == operTypeId)){
-                            Element operAttrElement = (Element) operationParametersElement.getElementsByTagName("ns3:OperAttr").item(0);
-                            int operAttrId = Integer.parseInt(operAttrElement.getElementsByTagName("ns3:Id").item(0).getTextContent());
-                            tempRecord.setOperAttrId(operAttrId);
-                            if (operAttrId != 0){
-                                tempRecord.setOperAttrName(operAttrElement.getElementsByTagName("ns3:Name").item(0).getTextContent());
+                        if(IntStream.of(withOutAttr).noneMatch(x -> x == typeId)){
+                            Element attrElement = (Element) operationParametersElement.getElementsByTagName("ns3:OperAttr").item(0);
+                            int attrId = Integer.parseInt(attrElement.getElementsByTagName("ns3:Id").item(0).getTextContent());
+                            tempRecord.setRecordAttrId(attrId);
+                            if (attrId != 0){
+                                tempRecord.setRecordAttrName(attrElement.getElementsByTagName("ns3:Name").item(0).getTextContent());
                             }
                         }
 
@@ -176,12 +175,12 @@ public class PostSOAPSingleService implements PostService{
                         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
                         String operDate = operDateElement.getTextContent();
                         try {
-                            tempRecord.setOperDate(formatter.parse(operDate.substring(0, operDate.length() - 5)));
+                            tempRecord.setRecordDate(formatter.parse(operDate.substring(0, operDate.length() - 5)));
                         } catch (ParseException e) {
                             e.printStackTrace();
                         }
 
-                        switch (tempRecord.getOperTypeId()){
+                        switch (tempRecord.getRecordTypeId()){
                             case 2:
                             case 15:
                             case 16:
@@ -190,7 +189,7 @@ public class PostSOAPSingleService implements PostService{
                                 tempRecord.setLast(true);
                                 break;
                             case 5:
-                                if(tempRecord.getOperAttrId() == 1 || tempRecord.getOperAttrId() == 2)
+                                if(tempRecord.getRecordAttrId() == 1 || tempRecord.getRecordAttrId() == 2)
                                     tempRecord.setLast(true);
                                 break;
                         }
