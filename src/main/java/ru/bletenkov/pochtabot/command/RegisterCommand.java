@@ -38,7 +38,7 @@ public class RegisterCommand extends AbstractCommand {
         if(user == null){
             user = new User();
             user.setChatId(message.getChatId());
-            userService.saveUserModel(user);
+            userService.save(user);
             messageString.append("User ")
                     .append(message.getFrom().getUserName())
                     .append(" was saved to database");

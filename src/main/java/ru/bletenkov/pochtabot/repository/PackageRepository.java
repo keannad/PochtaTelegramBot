@@ -10,7 +10,9 @@ import java.util.List;
 public interface PackageRepository extends JpaRepository<MailPackage, Long> {
 
     List<MailPackage> getAllByUserId(Long userId);
+
     MailPackage getByUserIdAndCode(Long userId, String code);
+
     void deleteByUserIdAndCode(Long userId, String code);
 
 }

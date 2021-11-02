@@ -35,12 +35,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void saveUserModel(User user){
+    public void save(User user){
         userRepository.save(user);
     }
 
     @Override
-    public boolean deleteUserModel(Long chatId){
+    public boolean delete(Long chatId){
         User user = userRepository.getByChatId(chatId);
         List<MailPackage> packageList = packageService.get(chatId);
         for (MailPackage pack : packageList) {

@@ -12,7 +12,7 @@ public interface UserService {
 
     boolean isRegistered(Long chatId);
 
-    void saveUserModel(User user);
+    void save(User user);
 
-    boolean deleteUserModel(Long chatId);
+    boolean delete(Long chatId);
 }
