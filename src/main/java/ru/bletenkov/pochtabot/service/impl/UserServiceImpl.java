@@ -1,6 +1,7 @@
 package ru.bletenkov.pochtabot.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.jvnet.hk2.annotations.Service;
 import ru.bletenkov.pochtabot.model.MailPackage;
 import ru.bletenkov.pochtabot.model.User;
@@ -12,6 +13,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
@@ -29,8 +31,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean isRegistered(Long chatId){
-        User model = userRepository.getByChatId(chatId);
-        return model != null;
+        return userRepository.existsById(chatId);
     }
 
     @Override

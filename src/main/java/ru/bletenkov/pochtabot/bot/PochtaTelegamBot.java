@@ -1,26 +1,60 @@
 package ru.bletenkov.pochtabot.bot;
 
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.extensions.bots.commandbot.TelegramLongPollingCommandBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import ru.bletenkov.pochtabot.command.*;
-import ru.bletenkov.pochtabot.service.impl.PackageServiceImpl;
-import ru.bletenkov.pochtabot.service.impl.PostSOAPSingleService;
-import ru.bletenkov.pochtabot.service.impl.UserServiceImpl;
+import ru.bletenkov.pochtabot.command.AddCommand;
+import ru.bletenkov.pochtabot.command.DeleteCommand;
+import ru.bletenkov.pochtabot.command.LastCommand;
+import ru.bletenkov.pochtabot.command.RegisterCommand;
+import ru.bletenkov.pochtabot.command.StartCommand;
+import ru.bletenkov.pochtabot.command.TrackCommand;
+import ru.bletenkov.pochtabot.service.PackageService;
+import ru.bletenkov.pochtabot.service.PostService;
+import ru.bletenkov.pochtabot.service.UserService;
 
 import java.util.List;
 import java.util.Properties;
 
+@Component
+@Slf4j
 public class PochtaTelegamBot extends TelegramLongPollingCommandBot {
 
     private String bot_name;
     private String bot_token;
 
-    private final UserServiceImpl userService;
-    private final PackageServiceImpl packageServiceImpl;
+    private final UserService userService;
+    private final PackageService packageService;
+    private final PostService postService;
 
-    public PochtaTelegamBot(UserServiceImpl userService,
-                            PackageServiceImpl packageServiceImpl) {
+    private final AddCommand addCommand;
+    private final DeleteCommand deleteCommand;
+    private final LastCommand lastCommand;
+    private final RegisterCommand registerCommand;
+    private final StartCommand startCommand;
+    private final TrackCommand trackCommand;
+
+    public PochtaTelegamBot(UserService userService,
+                            PackageService packageService,
+                            PostService postService,
+                            AddCommand addCommand,
+                            DeleteCommand deleteCommand,
+                            LastCommand lastCommand,
+                            RegisterCommand registerCommand,
+                            StartCommand startCommand,
+                            TrackCommand trackCommand) {
         super();
+
+        this.userService = userService;
+        this.packageService = packageService;
+        this.postService = postService;
+        this.addCommand = addCommand;
+        this.deleteCommand = deleteCommand;
+        this.lastCommand = lastCommand;
+        this.registerCommand = registerCommand;
+        this.startCommand = startCommand;
+        this.trackCommand = trackCommand;
 
         try {
 
@@ -35,25 +69,17 @@ public class PochtaTelegamBot extends TelegramLongPollingCommandBot {
             ex.printStackTrace();
         }
 
-        this.userService = userService;
-        this.packageServiceImpl = packageServiceImpl;
-
-        register(new StartCommand());
-        register(new AddCommand(packageServiceImpl));
-        register(new DeleteCommand(packageServiceImpl));
-        register(new LastCommand(packageServiceImpl));
-        register(new RegisterCommand(userService));
-        register(new TrackCommand(new PostSOAPSingleService(), userService, packageServiceImpl));
+        register(startCommand);
+        register(addCommand);
+        register(deleteCommand);
+        register(lastCommand);
+        register(registerCommand);
+        register(trackCommand);
     }
 
     @Override
     public void onUpdatesReceived(List<Update> updates) {
         super.onUpdatesReceived(updates);
-    }
-
-    @Override
-    public String getBotUsername() {
-        return bot_name;
     }
 
     @Override
@@ -66,7 +92,12 @@ public class PochtaTelegamBot extends TelegramLongPollingCommandBot {
     }
 
     @Override
+    public String getBotUsername() {
+        return bot_name;
+    }
+
+    @Override
     public String getBotToken() {
-        return null;
+        return bot_token;
     }
 }

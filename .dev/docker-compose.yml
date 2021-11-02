@@ -1,0 +1,14 @@
+services:
+  rpb-postgres:
+    image: "postgres:13.3-alpine"
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./postgresql:/docker-entrypoint-initdb.d/
+      - ./postgresql/data:/var/lib/postgresql/data
+    environment:
+      BOT_POSTGRES_USER: postbot
+      BOT_POSTGRES_PASSWORD: postpassword
+      BOT_POSTGRES_DB: russianpostbot
+      POSTGRES_PASSWORD: postgres
+    container_name: RPB-postgres

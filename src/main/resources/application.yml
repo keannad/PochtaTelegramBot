@@ -1,0 +1,9 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: validate
+  datasource:
+    url: jdbc:postgresql://localhost:5432/russianpostbot?currentSchema=russianpost
+    username: postbot
+    password: postpassword
+    driver-class-name: org.postgresql.Driver

@@ -2,15 +2,14 @@ package ru.bletenkov.pochtabot.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.telegram.telegrambots.extensions.bots.commandbot.commands.IBotCommand;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.bots.AbsSender;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-@RequiredArgsConstructor
 @Slf4j
-public class StartCommand implements IBotCommand {
+@RequiredArgsConstructor
+@Component
+public class StartCommand extends AbstractCommand {
 
     private final String commandName = "start";
     private final String description = "Bot start command";
@@ -28,14 +27,8 @@ public class StartCommand implements IBotCommand {
     @Override
     public void processMessage(AbsSender absSender, Message message, String[] strings) {
 
-        SendMessage sendMessage = new SendMessage();
-        sendMessage.setChatId(message.getChatId().toString());
-        sendMessage.setText("Russian Post Telegram Bot");
+        Long chatId = message.getChatId();
+        sendMessage(absSender, chatId, "Russian Post Telegram Bot");
 
-        try {
-            absSender.execute(sendMessage);
-        } catch (TelegramApiException e) {
-            e.printStackTrace();
-        }
     }
 }

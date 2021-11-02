@@ -8,8 +8,10 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 import ru.bletenkov.pochtabot.repository.PackageRepository;
 import ru.bletenkov.pochtabot.repository.UserRepository;
 import ru.bletenkov.pochtabot.service.PackageService;
+import ru.bletenkov.pochtabot.service.PostService;
 import ru.bletenkov.pochtabot.service.UserService;
 import ru.bletenkov.pochtabot.service.impl.PackageServiceImpl;
+import ru.bletenkov.pochtabot.service.impl.PostSOAPSingleService;
 import ru.bletenkov.pochtabot.service.impl.UserServiceImpl;
 
 @Configuration
@@ -31,9 +33,8 @@ public class TelegramBotStarterConfiguration {
     }
 
     @Bean
-    public TelegramBotInitializer telegramBotInitializer(TelegramBotsApi telegramBotsApi,
-                                                         UserServiceImpl userService,
-                                                         PackageServiceImpl packageServiceImpl) throws TelegramApiException {
-        return new TelegramBotInitializer(telegramBotsApi, userService, packageServiceImpl);
+    public PostService postService(){
+        return new PostSOAPSingleService();
     }
+
 }
