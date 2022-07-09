@@ -1,4 +1,3 @@
-/.idea/
-/target/
-/src/main/resources/pochta.properties
-/src/main/resources/bot.properties
+.idea
+**.iml
+**/target/**

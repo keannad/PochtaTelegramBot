@@ -1,0 +1,19 @@
+spring:
+  datasource:
+    url: ${JDBC_URL:jdbc:postgresql://127.0.0.1:5432/pochtabot?ApplicationName=PTB}
+    username: ${JDBC_USERNAME:ptblogin}
+    password: ${JDBC_PASSWORD:ptbpass}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      transaction-isolation: TRANSACTION_READ_COMMITTED
+
+telegram:
+  bot:
+    name: ${BOT_NAME}
+    token: ${BOT_TOKEN}
+
+russianpost:
+  login: ${POST_LOGIN}
+  password: ${POST_PASSWORD}
+  url: https://tracking.russianpost.ru/rtm34
